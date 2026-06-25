@@ -3,7 +3,7 @@
 
 import requests
 #queremos o cep no formato de 8 numeros tipo: "00000000"
-cep = "12228900"
+cep = "1228900"
 cep = cep.replace("-","").replace(".","").replace(" ","")
 
 if cep.isdigit and len(cep) == 8:

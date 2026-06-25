@@ -1,6 +1,7 @@
 import customtkinter as ctk
 from tkcalendar import DateEntry
 from datetime import date
+from Endereco import CEP_API, Endereco
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("green")
@@ -24,21 +25,19 @@ class Aplicativo(ctk.CTk):
         self.principal.grid(row=0, column = 1, sticky = "nsew", padx = 10)
 
         self.Deslogado()
-        #self.Logado()
-        #self.LogadoAdm()
-
         self.deslogado()
-        self.login()
-        self.cadastro()
-        self.logado()
-        self.logadoADM()
-        self.editar()
-        self.editarADM()
+
+        self.admin = False
 
     def limpar_tela(self, tela):
         for widget in list(tela.winfo_children()):
             widget.destroy()
     
+    def sair(self):
+        self.Deslogado()
+        self.deslogado()
+        self.admin = False
+
     def Deslogado(self):
         self.limpar_tela(self.barra_lateral)
         self.titulo = ctk.CTkLabel(self.barra_lateral,
@@ -48,11 +47,11 @@ class Aplicativo(ctk.CTk):
 
 
         self.botao_cadastro = ctk.CTkButton(self.barra_lateral,
-                                            text = "Cadastre-se")
-        self.botao_cadastro.pack(pady = (10,10), padx = (20,20), side = "bottom" )
+                                            text = "Cadastre-se", command = self.cadastro)
+        self.botao_cadastro.pack(pady = (10,10), padx = (20,20), side = "bottom")
 
         self.botao_login = ctk.CTkButton(self.barra_lateral,
-                                         text = "Login")
+                                         text = "Login", command = self.login)
         self.botao_login.pack(pady = (10,10), padx = (20,20), side = "bottom")
         
     def Logado(self):
@@ -64,17 +63,11 @@ class Aplicativo(ctk.CTk):
         self.disponivel = ctk.CTkCheckBox(self.barra_lateral,
                                           text = "Disponível para trabalho!")
         self.disponivel.pack(pady=(30,30), padx = (20,20))
-
-        #Exibir nome
-        #Checkbox de open-to-work
-        #Botão Editar
-        #Botão sair
-
         
         self.botao_sair = ctk.CTkButton(self.barra_lateral,
-                                         text = "Sair")
+                                         text = "Sair", command = self.sair)
         
-        self.botao_sair.pack(pady = (10,10), padx = (20,20), side = "bottom")
+        self.botao_sair.pack(pady = (10,10), padx = (20,20), side = "bottom", command = self.sair)
 
         self.botao_editar = ctk.CTkButton(self.barra_lateral,
                                          text = "Editar dados")
@@ -88,11 +81,9 @@ class Aplicativo(ctk.CTk):
                                  font = ctk.CTkFont(size = 18, weight= "bold"))
         self.nome.pack(pady=(30,10), padx = (20,20))       
         self.botao_sair = ctk.CTkButton(self.barra_lateral,
-                                         text = "Sair")
+                                         text = "Sair", command = self.sair)
         
         self.botao_sair.pack(pady = (10,10), padx = (20,20), side = "bottom")
-        
-        pass
 
     def deslogado(self):
         self.limpar_tela(self.principal)
@@ -113,7 +104,7 @@ class Aplicativo(ctk.CTk):
         self.campo_senha.pack(pady=(0,0),padx= 100)
 
         botao_entrar = ctk.CTkButton(self.principal,
-                                         text = "Entrar")
+                                         text = "Entrar", command = self.fazer_login)
         botao_entrar.pack(pady = (10,10), padx = (20,20))
 
         ###o que fazer aqui????
@@ -150,7 +141,7 @@ class Aplicativo(ctk.CTk):
         CEP_label.grid(row = 4, column = 0, pady = (20,20), padx = 10, sticky = "e")
         self.campo_CEP = ctk.CTkEntry(self.principal, placeholder_text="Digite seu CEP", width = 300)
         self.campo_CEP.grid(row = 4, column = 1, pady = (20,20), padx = 10)
-        self.buscar_cep = ctk.CTkButton(self.principal, text = "Buscar")
+        self.buscar_cep = ctk.CTkButton(self.principal, text = "Buscar", command = self.buscar_CEP)
         self.buscar_cep.grid(row = 4, column = 2, pady = (20,20))
 
         cidade_label = ctk.CTkLabel(self.principal, text = "Cidade:")
@@ -192,17 +183,68 @@ class Aplicativo(ctk.CTk):
         self.filtros = ctk.CTkFrame(self.principal, height = 50)
         self.filtros.pack(fill = "x")
 
-        self.menu_ordenacao = ctk.CTkOptionMenu(self.filtros, values = ["Nome(A-Z)", "Cidade", "CPF -> CNPJ"])
-        self.menu_ordenacao.pack(side = "right", padx = (0,250))
+        self.enable_cpf = ctk.CTkCheckBox(self.filtros, text = "CPF")
+        self.enable_cpf.pack(side = "right", padx = 10)
 
-        label_ordenacao = ctk.CTkLabel(self.filtros, text = "Ordenar por:")
-        label_ordenacao.pack(side = "right", padx = (280, 10))
+        self.enable_cnpj = ctk.CTkCheckBox(self.filtros, text = "CNPJ")
+        self.enable_cnpj.pack(side = "right", padx = 5)
+
+        label_ordenacao = ctk.CTkLabel(self.filtros, text = "Filtros:")
+        label_ordenacao.pack(side = "right", padx = (230, 10))
+
+        self.menu_ordenacao = ctk.CTkOptionMenu(self.filtros, values = ["Nome(A-Z)", "Cidade"])
+        self.menu_ordenacao.pack(side = "right", padx = 10)
+
+       
+        label_ordenacao2 = ctk.CTkLabel(self.filtros, text = "Ordenar por:")
+        label_ordenacao2.pack(side = "right", padx = (50, 10))
 
         self.rolagem = ctk.CTkScrollableFrame(self.principal, label_text="Prestadores Disponíveis")
         self.rolagem.pack(fill = "both", expand = True, padx = 10, pady = 5)
 
+    def habilitar_cpf(self):
+        self.cpf = self.enable_cpf.get()
+        self.atualizar_lista()
+        pass
 
-    def logadoADM(self):
+    def habilitar_cnpj(self):
+        self.cnpj = self.enable_cnpj.get()
+        self.atualizar_lista()
+        pass
+
+    def atualizar_lista(self):
+        ordem = self.menu_ordenacao.get()
+        if ordem == "Nome(A-Z)":
+            pass
+        else:
+            pass
+        
+        #usar as funcoes anteriores para pegar os dados PF ou PJ
+        #produto = coluna/linha dos dados por isso estamos iterando sobre ele. Verificar!
+        for produto in dados:
+            card = cardPrestadores(self.rolagem, produto, self.admin)
+            card.pack(fill = "x", padx = 10, pady = 5)
+        pass   
+         
+    def fazer_login(self):
+        email = self.campo_email.get()
+        senha = self.campo_senha.get()
+
+        #usar esses dados para fazer validacao no DB
+        validacao = False
+        self.admin = False ##VERIFICAR NA DB SE É ADMIN TB
+
+        if validacao and self.admin:
+            self.LogadoAdm()
+            self.logado()
+        elif not self.admin and validacao:
+            self.Logado()
+            self.logado()
+        else:
+            mensagem_erro = ctk.CTkLabel(self.principal, text= "Usuário ou senha incorretos", text_color= "red")
+            mensagem_erro.pack(pady = 50)
+
+    def salvar_dados(self):
         pass
 
     def editar(self):
@@ -213,50 +255,55 @@ class Aplicativo(ctk.CTk):
         #pesquisar como alterar a classe pra quando eu tiver esse acesso aparecer um botao apagar
         pass
 
-    def atualizarLista(self, escolha_ordenacao = None):
-        self.limpar_tela(self.rolagem)
-
-        ordem = self.menu_ordenacao.get()
-        if ordem == "Nome(A-Z)":
-            pass
-            #ordena A-Z os dados
-        elif ordem == "Cidade":
-            pass
-        elif ordem == "CPF -> CNPJ":
-            pass
-
-        for produto in dados:
-            card = cardPrestadores(self.rolagem, produto)
-            card.pack(fill = "x", padx = 10, pady = 5)
-
     def buscar_CEP(self):
         numero_CEP = self.campo_CEP.get()
-        #teste_CEP - retornar UF, CIDADE, BAIRRO
-        self.cidade_entry.delete(0, "end")
-        self.cidade_entry.insert(0, cidade_encontrada)
-        self.cidade_entry.configure(state ="disabled")
-        self.UF_entry.delete(0, "end")
-        self.UF_entry.insert(0, UF_encontrado)
-        self.UF_entry.configure(state ="disabled")
-        self.bairro_entry.delete(0, "end")
-        self.bairro_entry.insert(0, bairro_encontrado)
-        self.bairro_entry.configure(state ="disabled")
-        self.rua_entry.delete(0, "end")
-        self.rua_entry.insert(0, rua_encontrada)
-        self.rua_entry.configure(state ="disabled")
+        CEP = CEP_API()
+        endereco = CEP.ler_endereco(numero_CEP)
+        self.erroCEP = ctk.CTkLabel(self.principal)
+
+        if(endereco.cidade == ""):
+            self.erroCEP.configure(text = "Erro na busca, verifique o CEP")
+            self.erroCEP.grid(row = 4, column = 3, padx=5 )
+            self.cidade_entry.configure(state ="normal")
+            self.UF_entry.configure(state ="normal")
+            self.bairro_entry.configure(state ="normal")
+            self.rua_entry.configure(state ="normal")
+
+        else:
+            self.erroCEP.configure(text = "Busca bem sucedida!")
+            self.cidade_entry.configure(state ="normal")
+            self.cidade_entry.delete(0, "end")
+            self.cidade_entry.insert(0, endereco.cidade)
+            self.cidade_entry.configure(state ="disabled")
+            self.UF_entry.configure(state ="normal")
+            self.UF_entry.delete(0, "end")
+            self.UF_entry.insert(0, endereco.uf)
+            self.UF_entry.configure(state ="disabled")
+            self.bairro_entry.configure(state ="normal")
+            self.bairro_entry.delete(0, "end")
+            self.bairro_entry.insert(0, endereco.bairro)
+            self.bairro_entry.configure(state ="disabled")
+            self.rua_entry.configure(state ="normal")
+            self.rua_entry.delete(0, "end")
+            self.rua_entry.insert(0, endereco.rua)
+            self.rua_entry.configure(state ="disabled")
 
 class cardPrestadores(ctk.CTkFrame):
-    def __init__(self, master, dados_prestadores):
+    def __init__(self, master, dados_prestadores, admin):
         super().__init__(master)
 
         self.configure(fg_color=("#F5F102", "#000657"), height=50)
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_rowconfigure((0,3), weight = 1)
+        self.grid_columnconfigure(1, weight=1)
+        self.grid_rowconfigure(3, weight = 1)
 
         self.nome = ctk.CTkLabel(master, text = dados_prestadores.nome, font = ctk.CTkFont(size = 20, weight= "bold"))
         self.nome.grid(column = 0, row = 0, padx = 10, pady = 5)
 
-        self.contato = ctk.CTkLabel(master, text = dados_prestadores.email + dados_prestadores.telefonem, font= ctk.CTkFont(size = 12))
+        if(admin):
+            self.deletar = ctk.CTkButton(master, text = "X", color = "red")
+            self.deletar.grid(column =0 , row = 1, sticky = "e")
+
+        self.contato = ctk.CTkLabel(master, text = dados_prestadores.email + dados_prestadores.telefone, font= ctk.CTkFont(size = 12))
         self.contato.grid(column = 0, row = 1, padx = 10, pady = 5)
 
         self.documento = ctk.CTkLabel(master, text = dados_prestadores.documento, font= ctk.CTkFont(size = 12))
