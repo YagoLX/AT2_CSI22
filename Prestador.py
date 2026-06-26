@@ -13,6 +13,7 @@ class Prestador:
         self.usuario = ""
         self.senha = ""
         self.adm = False
+        self.nome =""
     
     def def_adm(self, adm=False):
         self.adm = adm

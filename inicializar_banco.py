@@ -33,5 +33,6 @@ db = banco()
 
 #lista = db.listar_prestadores()
 #print(lista)
-print(db.buscar_prestador("48355731000186"))
+saida = db.listar_prestadores()
+print(saida[0]["documento"])
 #saida de exemplo: ('Yago', '321', '', 'cnpj', '48355731000186', '02/02/2002', 'Rodovia Augusto Montenegro', '11', 'fora do dcta', 'Mangueirão', 'Belém', 'PA', '66640000', 'yaguinho@gmail.com', 0)
