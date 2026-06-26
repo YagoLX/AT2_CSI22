@@ -35,6 +35,8 @@ class banco():
 
         self.conexao.commit()
         c.close()
+    
+
 
     def criar_prestador(self, prestador = Prestador(), adm = False):
         con = sqlite3.connect(self.caminho)
@@ -76,10 +78,18 @@ class banco():
                     FROM prestadores WHERE documento = ?""", 
                     (documento))
         linha = cur.fetchonte()
-        con.close
+        con.close()
         return linha
+    
+    def buscar_senha(self, usuario=""):
+        con = sqlite3.connect(self.caminho)
+        cur = con.cursor()
+        cur.execute("""SELECT senha FROM prestadores WHERE usuario = ?""", (usuario))
+        senha = cur.fetchone()
+        con.close()
+        return senha
 
-    def atualizar_prestador(cpf, prestador = Prestador()):
+    def atualizar_prestador(self, cpf, prestador = Prestador()):
         con = sqlite3.connect(self.caminho)
         cur = con.cursor()
         cur.execute("""UPDATE prestadores SET usuario, senha, nome, tipo_documento, documento, nascimento
@@ -89,7 +99,7 @@ class banco():
                      prestador.endereco.complemento, prestador.endereco.bairro, prestador.endereco.cidade,
                      prestador.endereco.uf, prestador.endereco.uf, prestador.endereco.cep, 
                      prestador.endereco.contato, prestador.endereco.adm))
-        modificado = cur.rowcount
+        modificado = cur.rowcount()
         con.commit()
         con.close()
         return modificado
