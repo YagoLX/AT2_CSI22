@@ -40,3 +40,12 @@ Cada prestador deve possuir:
 5) Interface Grafica
 - 
 -
+
+6) Funções que preciso da DB
+- verificar se é adm
+- login: retornar verdadeiro ou falso se o email e a senha (ambos tem que estar na mesma linha) estiverem na DB
+- função adicionar: temos que salvar na DB: Email, senha, documento, qual tipo de documento (baseado na entrada) (tem que ter uma coluna pra dizer se é CPF ou CNPJ), CEP, ciodade, UF, Bairro, rua, número, complemento. Não precisa verificar se é válido CPF ou CNPJ, vou fazer essa verificação antes de subir pra DB.
+- função editar: Quando tiver logado, preciso conseguir editar as informações passadas com a função adicionar.
+- função verificar ADM: Retorna 0 ou 1 se o usuário for adm.
+- função consulta: tem que retornar um vetor/list de structs com os campos nome, email, documento, cidade, tipo_documento (cpf ou cnpj).
+- dúvida na implementação da consulta: da pra puxar todos os dados da DB, organizar eles com .sort do python e lenha, mas isso com certeza é subótimo. Convém fazer uma função variável de busca? Os filtros que implementei são: CPF e CNPJ (check), caso contrário é só ordenar, daí é só usar o .sort msm, não precisa inventar moda. 

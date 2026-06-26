@@ -308,13 +308,13 @@ class cardPrestadores(ctk.CTkFrame):
             self.deletar = ctk.CTkButton(master, text = "X", color = "red")
             self.deletar.grid(column =0 , row = 1, sticky = "e")
 
-        self.contato = ctk.CTkLabel(master, text = dados_prestadores.email + dados_prestadores.telefone, font= ctk.CTkFont(size = 12))
+        self.contato = ctk.CTkLabel(master, text = dados_prestadores.email, font= ctk.CTkFont(size = 12))
         self.contato.grid(column = 0, row = 1, padx = 10, pady = 5)
 
         self.documento = ctk.CTkLabel(master, text = dados_prestadores.documento, font= ctk.CTkFont(size = 12))
         self.documento.grid(column = 0, row = 2, padx = 10, pady = 5)
 
-        self.endereco = ctk.CTkLabel(master, text = dados_prestadores.bairro, font= ctk.CTkFont(size = 12))
+        self.endereco = ctk.CTkLabel(master, text = dados_prestadores.cidade, font= ctk.CTkFont(size = 12))
         self.endereco.grid(column = 0, row = 3, padx = 10, pady = 5)
 
 janela = Aplicativo()
