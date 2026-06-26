@@ -109,7 +109,7 @@ class Aplicativo(ctk.CTk):
 
         ###o que fazer aqui????
         esqueceu_senha = ctk.CTkButton(self.principal,
-                                         text = "Esqueceu sua senha?")
+                                         text = "Esqueceu sua senha?", command = self.esqueceu_senha)
         esqueceu_senha.pack(pady = (0,10), padx = (20,20))
 
     def cadastro(self):
@@ -254,8 +254,13 @@ class Aplicativo(ctk.CTk):
     def editarADM(self):
         #pesquisar como alterar a classe pra quando eu tiver esse acesso aparecer um botao apagar
         pass
+    
+    def esqueceu_senha(self):
+        aviso_senha = ctk.CTkLabel(self.principal, text = "Entre em contato com os desenvolvedores no email: desenvolvedores@emailfake.com")
+        aviso_senha.pack(pady=10)
 
     def buscar_CEP(self):
+
         numero_CEP = self.campo_CEP.get()
         CEP = CEP_API()
         endereco = CEP.ler_endereco(numero_CEP)
