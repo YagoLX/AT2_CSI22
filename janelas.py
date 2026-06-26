@@ -24,7 +24,7 @@ class Aplicativo(ctk.CTk):
         self.principal = ctk.CTkFrame(self,400)
         self.principal.grid(row=0, column = 1, sticky = "nsew", padx = 10)
 
-        self.Deslogado()
+        self.Logado()
         self.deslogado()
 
         self.admin = False
@@ -60,17 +60,14 @@ class Aplicativo(ctk.CTk):
                                  text = "Olá  + retorno da funcao de busca da DB",
                                  font = ctk.CTkFont(size = 18, weight= "bold"))
         self.nome.pack(pady=(30,10), padx = (20,20))       
-        self.disponivel = ctk.CTkCheckBox(self.barra_lateral,
-                                          text = "Disponível para trabalho!")
-        self.disponivel.pack(pady=(30,30), padx = (20,20))
         
         self.botao_sair = ctk.CTkButton(self.barra_lateral,
                                          text = "Sair", command = self.sair)
         
-        self.botao_sair.pack(pady = (10,10), padx = (20,20), side = "bottom", command = self.sair)
+        self.botao_sair.pack(pady = (10,10), padx = (20,20), side = "bottom")
 
         self.botao_editar = ctk.CTkButton(self.barra_lateral,
-                                         text = "Editar dados")
+                                         text = "Editar dados", command = self.atualizar_cadastro)
         
         self.botao_editar.pack(pady = (10,10), padx = (20,20), side = "bottom")
 
@@ -174,8 +171,15 @@ class Aplicativo(ctk.CTk):
         self.complemento_entry = ctk.CTkEntry(self.principal, placeholder_text= "Complemento", width = 300)
         self.complemento_entry.grid(row = 9, column = 1, pady = (20,20), padx = 10, sticky = "e")
         
-        botao_criar = ctk.CTkButton(self.principal, text = "Criar conta")
-        botao_criar.grid(row = 10, column = 1)
+        self.botao_criar = ctk.CTkButton(self.principal, text = "Criar conta")
+        self.botao_criar.grid(row = 10, column = 1)
+
+    def atualizar_cadastro(self):
+        self.cadastro()
+        self.botao_criar.configure(text = "Atualizar Cadastro")
+        self.apagar_conta = ctk.CTkButton(self.principal, text = "Apagar conta", fg_color= "red")
+        self.apagar_conta.grid(row =10, column = 2, padx = 0, pady = 20)
+        pass
 
     def logado(self):
         self.limpar_tela(self.principal)

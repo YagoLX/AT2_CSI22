@@ -49,3 +49,4 @@ Cada prestador deve possuir:
 - função verificar ADM: Retorna 0 ou 1 se o usuário for adm.
 - função consulta: tem que retornar um vetor/list de structs com os campos nome, email, documento, cidade, tipo_documento (cpf ou cnpj).
 - dúvida na implementação da consulta: da pra puxar todos os dados da DB, organizar eles com .sort do python e lenha, mas isso com certeza é subótimo. Convém fazer uma função variável de busca? Os filtros que implementei são: CPF e CNPJ (check), caso contrário é só ordenar, daí é só usar o .sort msm, não precisa inventar moda. 
+- função apagar conta: apaga conta do DB.
