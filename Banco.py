@@ -23,7 +23,7 @@ class banco():
                      uf text,
                      cep text,
                      contato text,
-                     adm text)"""
+                     adm BOOLEAN)"""
         self.caminho = "prestador.db"
         self.conexao = sqlite3.connect(self.caminho)
         self.criar_tabela()
@@ -38,35 +38,44 @@ class banco():
     
 
 
-    def criar_prestador(self, prestador = Prestador(), adm = False):
+    def criar_prestador(self, prestador = Prestador()):
+        adm = prestador.adm
         con = sqlite3.connect(self.caminho)
         cur = con.cursor()
-        if prestador.def_documento != "" and prestador.nome != "" :
-            cur.execute("""INSERT INTO prestadores (usuario, senha, 
-                        nome, tipo_documento, documento,
-                        nascimento, rua, numero, complemento,
-                        bairro, cidade, uf, cep, contato, adm) 
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)"""
-                        (prestador.usuario, prestador.senha,
-                         prestador.nome, prestador.tipo_documento,
-                         prestador.documento,
-                         prestador.nascimento, prestador.rua,
-                         prestador.endereco.numero,
-                         prestador.endereco.complemento,
-                         prestador.endereco.bairro,
-                         prestador.endereco.cidade,
-                         prestador.endereco.uf,
-                         prestador.endereco.cep,
-                         prestador.contato,
-                         prestador.adm))
-            
+        cur.execute("""
+        INSERT INTO prestadores (
+        usuario, senha, nome, tipo_documento, documento,
+        nascimento, rua, numero, complemento,
+        bairro, cidade, uf, cep, contato, adm
+    )
+    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+        """, (
+        prestador.usuario,
+        prestador.senha,
+        prestador.nome,
+        prestador.tipo_documento,
+        prestador.documento,
+        prestador.nascimento,
+        prestador.endereco.rua,
+        prestador.endereco.numero,
+        prestador.endereco.complemento,
+        prestador.endereco.bairro,
+        prestador.endereco.cidade,
+        prestador.endereco.uf,
+        prestador.endereco.cep,
+        prestador.contato,
+        prestador.adm
+        ))
+        con.commit()
+        con.close()
+ 
     def listar_prestadores(self):
         con = sqlite3.connect(self.caminho)
         cur = con.cursor()
-        cur.execute("""SELECT usuario, senha, 
-                        nome, tipo_documento, documento,
-                        nascimento, rua, numero, complemento,
-                        bairro, cidade, uf, cep, contato, adm FROM prestadores ORDER BY cidade""")
+        cur.execute("""SELECT * FROM prestadores ORDER BY cidade""")
+        linhas = cur.fetchall()
+        con.close()
+        return linhas
         
     def buscar_prestador(self,documento):
         con = sqlite3.connect(self.caminho)
@@ -76,15 +85,15 @@ class banco():
                         nascimento, rua, numero, complemento,
                         bairro, cidade, uf, cep, contato, adm 
                     FROM prestadores WHERE documento = ?""", 
-                    (documento))
-        linha = cur.fetchonte()
+                    (documento,))
+        linha = cur.fetchone()
         con.close()
         return linha
     
     def buscar_senha(self, usuario=""):
         con = sqlite3.connect(self.caminho)
         cur = con.cursor()
-        cur.execute("""SELECT senha FROM prestadores WHERE usuario = ?""", (usuario))
+        cur.execute("""SELECT senha FROM prestadores WHERE usuario = ?""", (usuario,))
         senha = cur.fetchone()
         con.close()
         return senha
@@ -107,7 +116,7 @@ class banco():
     def deletar_prestador(self, documento =""):
         con = sqlite3.connect(self.caminho)
         cur = con.cursor()
-        cur.execute("DELETE FROM prestadores WHERE documento = ?", (documento))
+        cur.execute("DELETE FROM prestadores WHERE documento = ?", (documento,))
         deletado = cur.rowcount
         con.commit()
         con.close()
