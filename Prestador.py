@@ -10,6 +10,27 @@ class Prestador:
         self.nascimento = ""
         self.contato = ""
         self.endereco = Endereco()
+        self.usuario = ""
+        self.senha = ""
+        self.adm = False
+    
+    def def_adm(self, adm=False):
+        self.adm = adm
+    
+    def ler_adm(self, adm):
+        return self.adm
+
+    def def_usuario(self, usuario=""):
+        self.usuario = usuario
+    
+    def ler_usuario(self):
+        return self.usuario
+    
+    def def_senha(self, senha = ""):
+        self.senha = senha
+
+    def ler_senha(self):
+        return self.senha
 
     def def_id(self,identificacao):
         self.id = identificacao
