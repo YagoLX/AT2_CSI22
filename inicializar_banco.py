@@ -28,8 +28,10 @@ prestador2.contato = "yaguinho@gmail.com"
 prestador2.endereco.complemento = "fora do dcta"
 
 db = banco()
-db.criar_prestador(prestador1)
-db.criar_prestador(prestador2)
+#db.criar_prestador(prestador1)
+#db.criar_prestador(prestador2)
 
-lista = db.listar_prestadores()
-print(lista)
+#lista = db.listar_prestadores()
+#print(lista)
+print(db.buscar_prestador("48355731000186"))
+#saida de exemplo: ('Yago', '321', '', 'cnpj', '48355731000186', '02/02/2002', 'Rodovia Augusto Montenegro', '11', 'fora do dcta', 'Mangueirão', 'Belém', 'PA', '66640000', 'yaguinho@gmail.com', 0)
