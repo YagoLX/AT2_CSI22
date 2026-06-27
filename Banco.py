@@ -92,6 +92,7 @@ class banco():
         linhas = cur.fetchall()
         con.close()
         return linhas
+
         
     def buscar_prestador(self,documento):
         con = sqlite3.connect(self.caminho)

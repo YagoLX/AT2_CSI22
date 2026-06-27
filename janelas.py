@@ -247,7 +247,7 @@ class Aplicativo(ctk.CTk):
         ordem = self.menu_ordenacao.get()
         if ordem == "Nome(A-Z)":
             dados = self.lista_por_documento()
-            dados.sort()
+            dados.sort(key = lambda x:x[1])
         else:
             dados = self.lista_por_documento()
             dados.sort(key = lambda x: x[4])
@@ -329,7 +329,7 @@ class Aplicativo(ctk.CTk):
             self.deslogado()
 
         elif self.verificar_se_vazio():
-            documento_invalido = ctk.CTkLabel(self.principal, text = "Algum campo vazio!", text_color= "red")
+            documento_invalido = ctk.CTkLabel(self.principal, text = "Algum campo inválido!", text_color= "red")
             documento_invalido.grid(row = 10, column = 2)
 
         elif not self.val_cnpj.validar(self.documento) or not self.val_cpf.validar(self.documento):
