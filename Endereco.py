@@ -18,7 +18,7 @@ class CEP_API:
     def formato_valido(self, cep):
         return cep.isdigit and len(cep) == 8
 
-
+    #erros tratatados de forma comum com biblioteca requests
     def ler_endereco(self,cep):
 
         self.ajustar_escrita(cep)

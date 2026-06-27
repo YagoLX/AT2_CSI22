@@ -287,7 +287,7 @@ class Aplicativo(ctk.CTk):
             if isinstance(widget,ctk.CTkEntry) and widget.get() == "" and widget != self.complemento_entry:
                 bool = True
         return bool
-
+    #MEXEU DIRETAMENTE NO CAMPO NO LUGAR DE USAR A FUNCAO DEF_...
     def adicionar(self):
         self.prestador = Prestador()
         endereco = Endereco()
@@ -299,21 +299,22 @@ class Aplicativo(ctk.CTk):
         endereco.numero = str(self.numero_entry.get())
         endereco.rua = str(self.rua_entry.get())
         endereco.complemento = str(self.complemento_entry.get())
-        self.prestador.endereco = endereco
+        self.prestador._endereco = endereco
 
-        self.prestador.documento = str(self.campo_doc.get())
+        self.prestador._documento = str(self.campo_doc.get())
         
-        if(self.val_cpf.validar(self.prestador.documento)):
-            self.prestador.tipo_documento = "cpf"
+        
+        if(self.val_cpf.validar(self.prestador._documento)):
+            self.prestador._tipo_documento = "cpf"
         else:
-            self.prestador.tipo_documento = "cnpj"
+            self.prestador._tipo_documento = "cnpj"
 
-        self.prestador.senha = str(self.campo_senha2.get())
+        self.prestador._senha = str(self.campo_senha2.get())
         self.prestador.nome = str(self.campo_nome.get())
-        self.prestador.usuario = self.prestador.nome
-        self.prestador.contato =str(self.campo_email2.get())
-        self.prestador.adm = False
-        self.prestador.nascimento =str(self.campo_data.get())
+        self.prestador._usuario = self.prestador.nome
+        self.prestador._contato =str(self.campo_email2.get())
+        self.prestador._adm = False
+        self.prestador._nascimento =str(self.campo_data.get())
        
     def salvar_dados(self):
         self.documento = str(self.campo_doc.get())
