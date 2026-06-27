@@ -1,7 +1,8 @@
 import customtkinter as ctk
+from Prestador import *
 from tkcalendar import DateEntry
-from datetime import date
 from Endereco import CEP_API, Endereco
+from Banco import *
 
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("green")
@@ -24,10 +25,16 @@ class Aplicativo(ctk.CTk):
         self.principal = ctk.CTkFrame(self,400)
         self.principal.grid(row=0, column = 1, sticky = "nsew", padx = 10)
 
-        self.Logado()
-        self.deslogado()
+        self.val_cnpj = validador_cnpj()
+        self.val_cpf = validador_cpf()
 
+        self.cnpj = False
+        self.cpf = False
         self.admin = False
+
+        self.db = banco()
+        self.Deslogado()
+        self.deslogado()
 
     def limpar_tela(self, tela):
         for widget in list(tela.winfo_children()):
@@ -57,7 +64,7 @@ class Aplicativo(ctk.CTk):
     def Logado(self):
         self.limpar_tela(self.barra_lateral)
         self.nome = ctk.CTkLabel(self.barra_lateral,
-                                 text = "Olá  + retorno da funcao de busca da DB",
+                                 text = " ".join(["Olá,",self.db.buscar_prestador(self.documento)[0]]),
                                  font = ctk.CTkFont(size = 18, weight= "bold"))
         self.nome.pack(pady=(30,10), padx = (20,20))       
         
@@ -74,7 +81,7 @@ class Aplicativo(ctk.CTk):
     def LogadoAdm(self):
         self.limpar_tela(self.barra_lateral)
         self.nome = ctk.CTkLabel(self.barra_lateral,
-                                 text = "Olá ADM + retorno da funcao de busca da DB",
+                                 text = " ".join(["Olá,",self.db.buscar_prestador(self.documento)[0]]),
                                  font = ctk.CTkFont(size = 18, weight= "bold"))
         self.nome.pack(pady=(30,10), padx = (20,20))       
         self.botao_sair = ctk.CTkButton(self.barra_lateral,
@@ -90,7 +97,7 @@ class Aplicativo(ctk.CTk):
     def login(self):
         self.limpar_tela(self.principal)
         self.campo_email = ctk.CTkEntry(self.principal,
-                                  placeholder_text="Digite seu email",
+                                  placeholder_text="Digite seu Documento",
                                   width = 300)
         self.campo_email.pack(pady = (200,20), padx = 100)
 
@@ -104,7 +111,6 @@ class Aplicativo(ctk.CTk):
                                          text = "Entrar", command = self.fazer_login)
         botao_entrar.pack(pady = (10,10), padx = (20,20))
 
-        ###o que fazer aqui????
         esqueceu_senha = ctk.CTkButton(self.principal,
                                          text = "Esqueceu sua senha?", command = self.esqueceu_senha)
         esqueceu_senha.pack(pady = (0,10), padx = (20,20))
@@ -124,31 +130,36 @@ class Aplicativo(ctk.CTk):
         self.campo_senha2 = ctk.CTkEntry(self.principal, placeholder_text="Digite sua senha", width = 300)
         self.campo_senha2.grid(row = 1, column = 1, pady = (20,20), padx = 10)
 
+        nome_label = ctk.CTkLabel(self.principal, text = "Nome:")
+        nome_label.grid(row = 2, column = 0, pady = (20,20), padx = 10, sticky = "e")
+        self.campo_nome = ctk.CTkEntry(self.principal, placeholder_text="Digite seu nome completo", width = 300)
+        self.campo_nome.grid(row = 2, column = 1, pady = (20,20), padx = 10)
+
         doc_label = ctk.CTkLabel(self.principal, text = "Documento:")
-        doc_label.grid(row = 2, column = 0, pady = (20,20), padx = 10, sticky = "e")
+        doc_label.grid(row = 3, column = 0, pady = (20,20), padx = 10, sticky = "e")
         self.campo_doc = ctk.CTkEntry(self.principal, placeholder_text="Digite seu CPF/CNPJ", width = 300)
-        self.campo_doc.grid(row = 2, column = 1, pady = (20,20), padx = 10)
+        self.campo_doc.grid(row = 3, column = 1, pady = (20,20), padx = 10)
 
         data_nasc = ctk.CTkLabel(self.principal, text = "Data de nascimento:")
-        data_nasc.grid(row = 3, column = 0, pady = (20,20), padx = 10, sticky = "e")
+        data_nasc.grid(row = 4, column = 0, pady = (20,20), padx = 10, sticky = "e")
         self.campo_data = DateEntry(self.principal, date_pattern = "dd/mm/yyyy")
-        self.campo_data.grid(row = 3, column = 1, pady = (20,20), padx = 10)
+        self.campo_data.grid(row = 4, column = 1, pady = (20,20), padx = 10)
 
         CEP_label = ctk.CTkLabel(self.principal, text = "CEP:")
-        CEP_label.grid(row = 4, column = 0, pady = (20,20), padx = 10, sticky = "e")
+        CEP_label.grid(row = 5, column = 0, pady = (20,20), padx = 10, sticky = "e")
         self.campo_CEP = ctk.CTkEntry(self.principal, placeholder_text="Digite seu CEP", width = 300)
-        self.campo_CEP.grid(row = 4, column = 1, pady = (20,20), padx = 10)
+        self.campo_CEP.grid(row = 5, column = 1, pady = (20,20), padx = 10)
         self.buscar_cep = ctk.CTkButton(self.principal, text = "Buscar", command = self.buscar_CEP)
-        self.buscar_cep.grid(row = 4, column = 2, pady = (20,20))
+        self.buscar_cep.grid(row = 5, column = 2, pady = (20,20))
 
         cidade_label = ctk.CTkLabel(self.principal, text = "Cidade:")
-        cidade_label.grid(row = 5, column = 0, pady = (20,20), padx = 10, sticky = "e")
+        cidade_label.grid(row = 6, column = 0, pady = (20,20), padx = 10, sticky = "e")
         self.cidade_entry = ctk.CTkEntry(self.principal, placeholder_text= "Cidade", width = 300)
-        self.cidade_entry.grid(row = 5, column = 1, pady = (20,20), padx = 10, sticky = "e")
+        self.cidade_entry.grid(row = 6, column = 1, pady = (20,20), padx = 10, sticky = "e")
         self.cidade_entry.configure(state = "normal")
 
         self.UF_entry = ctk.CTkEntry(self.principal, placeholder_text= "UF", width = 50)
-        self.UF_entry.grid(row = 5, column = 2, pady = (20,20), padx = 0, sticky = "w")
+        self.UF_entry.grid(row = 6, column = 2, pady = (20,20), padx = 0, sticky = "w")
         self.UF_entry.configure(state = "normal")
 
         bairro_label = ctk.CTkLabel(self.principal, text = "Bairro:")
@@ -171,15 +182,21 @@ class Aplicativo(ctk.CTk):
         self.complemento_entry = ctk.CTkEntry(self.principal, placeholder_text= "Complemento", width = 300)
         self.complemento_entry.grid(row = 9, column = 1, pady = (20,20), padx = 10, sticky = "e")
         
-        self.botao_criar = ctk.CTkButton(self.principal, text = "Criar conta")
+        self.botao_criar = ctk.CTkButton(self.principal, text = "Criar conta", command = self.salvar_dados)
         self.botao_criar.grid(row = 10, column = 1)
 
     def atualizar_cadastro(self):
         self.cadastro()
-        self.botao_criar.configure(text = "Atualizar Cadastro")
-        self.apagar_conta = ctk.CTkButton(self.principal, text = "Apagar conta", fg_color= "red")
-        self.apagar_conta.grid(row =10, column = 2, padx = 0, pady = 20)
-        pass
+        self.campo_doc.insert(0,self.documento)
+        self.campo_doc.configure(state="disabled")
+        self.botao_criar.configure(text = "Atualizar Cadastro", command = self.editar)
+        self.apagar_conta = ctk.CTkButton(self.principal, text = "Apagar conta", fg_color= "red", command = self.apagar_propria_conta)
+        self.apagar_conta.grid(row =10, column = 2)
+    
+    def apagar_propria_conta(self):
+        self.db.deletar_prestador(str(self.documento))
+        self.deslogado()
+        self.Deslogado()
 
     def logado(self):
         self.limpar_tela(self.principal)
@@ -187,56 +204,72 @@ class Aplicativo(ctk.CTk):
         self.filtros = ctk.CTkFrame(self.principal, height = 50)
         self.filtros.pack(fill = "x")
 
-        self.enable_cpf = ctk.CTkCheckBox(self.filtros, text = "CPF")
+        self.enable_cpf = ctk.CTkCheckBox(self.filtros, text = "CPF", command = self.habilitar_cpf)
         self.enable_cpf.pack(side = "right", padx = 10)
 
-        self.enable_cnpj = ctk.CTkCheckBox(self.filtros, text = "CNPJ")
+        self.enable_cnpj = ctk.CTkCheckBox(self.filtros, text = "CNPJ", command = self.habilitar_cnpj)
         self.enable_cnpj.pack(side = "right", padx = 5)
 
         label_ordenacao = ctk.CTkLabel(self.filtros, text = "Filtros:")
         label_ordenacao.pack(side = "right", padx = (230, 10))
 
-        self.menu_ordenacao = ctk.CTkOptionMenu(self.filtros, values = ["Nome(A-Z)", "Cidade"])
+        self.menu_ordenacao = ctk.CTkOptionMenu(self.filtros, values = ["Nome(A-Z)", "Cidade"], command = self.atualizar_lista)
         self.menu_ordenacao.pack(side = "right", padx = 10)
-
        
         label_ordenacao2 = ctk.CTkLabel(self.filtros, text = "Ordenar por:")
         label_ordenacao2.pack(side = "right", padx = (50, 10))
 
         self.rolagem = ctk.CTkScrollableFrame(self.principal, label_text="Prestadores Disponíveis")
         self.rolagem.pack(fill = "both", expand = True, padx = 10, pady = 5)
+        self.rolagem.grid_columnconfigure(0, weight=1)
+        self.atualizar_lista()
 
     def habilitar_cpf(self):
         self.cpf = self.enable_cpf.get()
         self.atualizar_lista()
-        pass
 
     def habilitar_cnpj(self):
         self.cnpj = self.enable_cnpj.get()
         self.atualizar_lista()
         pass
 
-    def atualizar_lista(self):
+    def lista_por_documento(self):
+        if self.cnpj == True and self.cpf == False:
+            return self.db.listar_por_cnpj()
+        
+        if self.cnpj == False and self.cpf == True:
+            return self.db.listar_por_cpf()
+        
+        return self.db.listar_prestadores()
+
+    def atualizar_lista(self, ordem = None):
+        self.limpar_tela(self.rolagem)
         ordem = self.menu_ordenacao.get()
         if ordem == "Nome(A-Z)":
-            pass
+            dados = self.lista_por_documento()
+            dados.sort()
         else:
-            pass
+            dados = self.lista_por_documento()
+            dados.sort(key = lambda x: x[4])
         
-        #usar as funcoes anteriores para pegar os dados PF ou PJ
-        #produto = coluna/linha dos dados por isso estamos iterando sobre ele. Verificar!
-        for produto in dados:
+        for i,produto in enumerate(dados):
             card = cardPrestadores(self.rolagem, produto, self.admin)
-            card.pack(fill = "x", padx = 10, pady = 5)
+            card.grid(row = i, column = 0, padx = 10, pady = 5, sticky = "ew")
         pass   
          
     def fazer_login(self):
-        email = self.campo_email.get()
-        senha = self.campo_senha.get()
+        self.documento = str(self.campo_email.get())
+
+        if not self.val_cnpj.validar(self.documento) and not self.val_cpf.validar(self.documento):
+            mensagem_erro = ctk.CTkLabel(self.principal, text= "Usuário ou senha incorretos", text_color= "red")
+            mensagem_erro.pack(pady = 50)
+            return 
+        
+        senha = str(self.campo_senha.get())
 
         #usar esses dados para fazer validacao no DB
-        validacao = False
-        self.admin = False ##VERIFICAR NA DB SE É ADMIN TB
+        validacao = senha == self.db.buscar_senha(self.documento)[0]
+        self.admin = self.db.buscar_adm(self.documento)[0] ##VERIFICAR NA DB SE É ADMIN TB
 
         if validacao and self.admin:
             self.LogadoAdm()
@@ -248,16 +281,82 @@ class Aplicativo(ctk.CTk):
             mensagem_erro = ctk.CTkLabel(self.principal, text= "Usuário ou senha incorretos", text_color= "red")
             mensagem_erro.pack(pady = 50)
 
+    def verificar_se_vazio(self):
+        bool = False
+        for widget in list(self.principal.winfo_children()):
+            if isinstance(widget,ctk.CTkEntry) and widget.get() == "" and widget != self.complemento_entry:
+                bool = True
+        return bool
+
+    def adicionar(self):
+        self.prestador = Prestador()
+        endereco = Endereco()
+
+        endereco.cep = str(self.campo_CEP.get())
+        endereco.uf = str(self.UF_entry.get()) 
+        endereco.cidade = str(self.cidade_entry.get())
+        endereco.bairro = str(self.bairro_entry.get())
+        endereco.numero = str(self.numero_entry.get())
+        endereco.rua = str(self.rua_entry.get())
+        endereco.complemento = str(self.complemento_entry.get())
+        self.prestador.endereco = endereco
+
+        self.prestador.documento = str(self.campo_doc.get())
+        
+        if(self.val_cpf.validar(self.prestador.documento)):
+            self.prestador.tipo_documento = "cpf"
+        else:
+            self.prestador.tipo_documento = "cnpj"
+
+        self.prestador.senha = str(self.campo_senha2.get())
+        self.prestador.nome = str(self.campo_nome.get())
+        self.prestador.usuario = self.prestador.nome
+        self.prestador.contato =str(self.campo_email2.get())
+        self.prestador.adm = False
+        self.prestador.nascimento =str(self.campo_data.get())
+       
     def salvar_dados(self):
-        pass
+        self.documento = str(self.campo_doc.get())
+  
+        if not self.verificar_se_vazio() and self.val_cnpj.validar(self.documento) and self.db.buscar_prestador(self.documento) is None:
+            self.adicionar()
+            self.db.criar_prestador(self.prestador)
+            self.deslogado()
+
+        elif not self.verificar_se_vazio() and self.val_cpf.validar(self.documento) and self.db.buscar_prestador(self.documento) is None:
+            self.adicionar()
+            self.db.criar_prestador(self.prestador)
+            self.deslogado()
+
+        elif self.verificar_se_vazio():
+            documento_invalido = ctk.CTkLabel(self.principal, text = "Algum campo vazio!", text_color= "red")
+            documento_invalido.grid(row = 10, column = 2)
+
+        elif not self.val_cnpj.validar(self.documento) or not self.val_cpf.validar(self.documento):
+            documento_invalido = ctk.CTkLabel(self.principal, text = "Documento inválido", text_color= "red")
+            documento_invalido.grid(row = 10, column = 2)
 
     def editar(self):
-        #copiar o cadastro, usar funcao do banco de dados pra atualizar alguma coisa
-        pass
+        
+        if not self.verificar_se_vazio() and self.val_cnpj.validar(self.documento):
+            self.adicionar()
+            self.db.atualizar_prestador(self.documento, self.prestador)
+            self.logado()
+            self.Logado()
 
-    def editarADM(self):
-        #pesquisar como alterar a classe pra quando eu tiver esse acesso aparecer um botao apagar
-        pass
+        elif not self.verificar_se_vazio() and self.val_cpf.validar(self.documento):
+            self.adicionar()
+            self.db.atualizar_prestador(self.documento, self.prestador)
+            self.logado()
+            self.Logado()
+
+        elif self.verificar_se_vazio():
+            documento_invalido = ctk.CTkLabel(self.principal, text = "Algum campo vazio!", text_color= "red")
+            documento_invalido.grid(row = 10, column = 3)
+
+        elif not self.val_cnpj.validar(self.documento) or not self.val_cpf.validar(self.documento):
+            documento_invalido = ctk.CTkLabel(self.principal, text = "Documento inválido", text_color= "red")
+            documento_invalido.grid(row = 10, column = 3)
     
     def esqueceu_senha(self):
         aviso_senha = ctk.CTkLabel(self.principal, text = "Entre em contato com os desenvolvedores no email: desenvolvedores@emailfake.com")
@@ -300,26 +399,31 @@ class Aplicativo(ctk.CTk):
 class cardPrestadores(ctk.CTkFrame):
     def __init__(self, master, dados_prestadores, admin):
         super().__init__(master)
-
-        self.configure(fg_color=("#F5F102", "#000657"), height=50)
+        #(01, 1'Pietro', 2'123', 3'', 4'cpf', 5'92553044020', '01/01/2001', 'Rua H8C', '10', 'no dcta', 'Campus do CTA', 'São José dos Campos', 'SP', '12228462', 'pietrinho@gmail.com', 1)
+        self.configure(fg_color=("#818181", "#18181D"), height=100)
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(3, weight = 1)
+        self.db = banco()
+        self.documento_prestador = dados_prestadores[5]
 
-        self.nome = ctk.CTkLabel(master, text = dados_prestadores.nome, font = ctk.CTkFont(size = 20, weight= "bold"))
-        self.nome.grid(column = 0, row = 0, padx = 10, pady = 5)
+        self.nome = ctk.CTkLabel(self, text = dados_prestadores[1], font = ctk.CTkFont(size = 20, weight= "bold"))
+        self.nome.grid(column = 0, row = 0, padx = 10, pady = (5,1), sticky="w")
 
-        if(admin):
-            self.deletar = ctk.CTkButton(master, text = "X", color = "red")
-            self.deletar.grid(column =0 , row = 1, sticky = "e")
+        if admin and dados_prestadores[15] == False:
+            self.deletar = ctk.CTkButton(self, text = "X", fg_color = "red", command = self.apagar_conta)
+            self.deletar.grid(column =1 , row = 0, padx = 5, pady= 5,sticky = "e")
 
-        self.contato = ctk.CTkLabel(master, text = dados_prestadores.email, font= ctk.CTkFont(size = 12))
-        self.contato.grid(column = 0, row = 1, padx = 10, pady = 5)
+        self.contato = ctk.CTkLabel(self, text = dados_prestadores[14], font= ctk.CTkFont(size = 12))
+        self.contato.grid(column = 0, row = 1, padx = 10, pady = 1, sticky="w")
 
-        self.documento = ctk.CTkLabel(master, text = dados_prestadores.documento, font= ctk.CTkFont(size = 12))
-        self.documento.grid(column = 0, row = 2, padx = 10, pady = 5)
+        self.documento = ctk.CTkLabel(self, text = dados_prestadores[5], font= ctk.CTkFont(size = 12))
+        self.documento.grid(column = 0, row = 2, padx = 10, pady = 1, sticky="w")
 
-        self.endereco = ctk.CTkLabel(master, text = dados_prestadores.cidade, font= ctk.CTkFont(size = 12))
-        self.endereco.grid(column = 0, row = 3, padx = 10, pady = 5)
+        endereco = [dados_prestadores[11], dados_prestadores[12], dados_prestadores[10], dados_prestadores[7], dados_prestadores[8], dados_prestadores[9], dados_prestadores[13]]
 
-janela = Aplicativo()
-janela.mainloop()
+        self.endereco = ctk.CTkLabel(self, text = ", ".join(endereco), font= ctk.CTkFont(size = 12))
+        self.endereco.grid(column = 0, row = 3, padx = 10, pady = 1, sticky="w")
+
+    def apagar_conta(self):
+        self.db.deletar_prestador(self.documento_prestador)
+        self.destroy()
