@@ -291,8 +291,10 @@ class Aplicativo(ctk.CTk):
     def adicionar(self):
         self.prestador = Prestador()
         endereco = Endereco()
+        CEP = CEP_API()
 
-        endereco.cep = str(self.campo_CEP.get())
+        endereco.cep = CEP.ajustar_escrita(str(self.campo_CEP.get()))
+        print(endereco.cep)
         endereco.uf = str(self.UF_entry.get()) 
         endereco.cidade = str(self.cidade_entry.get())
         endereco.bairro = str(self.bairro_entry.get())
@@ -302,7 +304,7 @@ class Aplicativo(ctk.CTk):
         self.prestador.endereco = endereco
 
         #self.prestador._documento = str(self.campo_doc.get())
-        self.prestador.def_documento = str(self.campo_doc.get())
+        self.prestador.def_documento(str(self.campo_doc.get()))  
         
         if(self.val_cpf.validar(self.prestador._documento)):
             self.prestador.def_tipo_documento("cpf")
@@ -311,13 +313,7 @@ class Aplicativo(ctk.CTk):
             self.prestador.def_tipo_documento("cnpj")
             #self.prestador._tipo_documento = "cnpj"
 
-        #self.prestador._senha = str(self.campo_senha2.get()) 
-        #self.prestador._nome = str(self.campo_nome.get())
-        #self.prestador._usuario = self.prestador._nome
-        #self.prestador._contato =str(self.campo_email2.get())
-        #self.prestador._adm = False
-        #self.prestador._nascimento =str(self.campo_data.get())
-       
+        self.prestador.def_nome(self.campo_nome.get())
         self.prestador.def_senha(self.campo_senha2.get())
         self.prestador.def_usuario(self.prestador._nome)
         self.prestador.def_contato(str(self.campo_email2.get()))
@@ -373,21 +369,23 @@ class Aplicativo(ctk.CTk):
 
     def buscar_CEP(self):
 
-        numero_CEP = self.campo_CEP.get()
         CEP = CEP_API()
+        numero_CEP = self.campo_CEP.get()
+        numero_CEP= CEP.ajustar_escrita(str(numero_CEP))
+        
         endereco = CEP.ler_endereco(numero_CEP)
         self.erroCEP = ctk.CTkLabel(self.principal)
+        self.erroCEP.grid(row = 4, column = 3, padx=5 )
 
-        if(endereco.cidade == ""):
+        if(str(endereco.cidade) == ""):
             self.erroCEP.configure(text = "Erro na busca, verifique o CEP")
-            self.erroCEP.grid(row = 4, column = 3, padx=5 )
             self.cidade_entry.configure(state ="normal")
             self.UF_entry.configure(state ="normal")
             self.bairro_entry.configure(state ="normal")
             self.rua_entry.configure(state ="normal")
 
         else:
-            self.erroCEP.configure(text = "Busca bem sucedida!")
+            self.erroCEP.configure(text = "Busca bem sucedida!                    ")
             self.cidade_entry.configure(state ="normal")
             self.cidade_entry.delete(0, "end")
             self.cidade_entry.insert(0, endereco.cidade)

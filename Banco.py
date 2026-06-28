@@ -30,7 +30,7 @@ class banco():
 
     def criar_tabela(self):
         try:
-            c = self.conexao
+            c = self.conexao.cursor()
             c.execute(self.SQL_CRIAR_TABELA)
             self.conexao.commit()
             c.close()
@@ -77,8 +77,8 @@ class banco():
             ))
             con.commit()
             con.close()
-        except: 
-            print("Erro ao criar prestador")
+        except Exception as e:
+            print(e)
 
     def listar_prestadores(self):
         try:

@@ -22,7 +22,7 @@ class Prestador:
         except:
             print("formato invalido na atribuicao de bool adm")
     
-    def ler_adm(self, adm):
+    def ler_adm(self):
         return self._adm
 
     def def_usuario(self, usuario=""):
@@ -67,7 +67,7 @@ class Prestador:
         except:
             print("Erro na atribuicao de documento")
 
-    def ler_documento(self,doc):
+    def ler_documento(self):
         return self._documento
 
     def def_nascimento(self, nasc):
