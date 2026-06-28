@@ -301,21 +301,29 @@ class Aplicativo(ctk.CTk):
         endereco.complemento = str(self.complemento_entry.get())
         self.prestador.endereco = endereco
 
-        self.prestador._documento = str(self.campo_doc.get())
-        
+        #self.prestador._documento = str(self.campo_doc.get())
+        self.prestador.def_documento = str(self.campo_doc.get())
         
         if(self.val_cpf.validar(self.prestador._documento)):
-            self.prestador._tipo_documento = "cpf"
+            self.prestador.def_tipo_documento("cpf")
+            #self.prestador._tipo_documento = "cpf"
         else:
-            self.prestador._tipo_documento = "cnpj"
+            self.prestador.def_tipo_documento("cnpj")
+            #self.prestador._tipo_documento = "cnpj"
 
-        self.prestador._senha = str(self.campo_senha2.get())
-        self.prestador._nome = str(self.campo_nome.get())
-        self.prestador._usuario = self.prestador._nome
-        self.prestador._contato =str(self.campo_email2.get())
-        self.prestador._adm = False
-        self.prestador._nascimento =str(self.campo_data.get())
+        #self.prestador._senha = str(self.campo_senha2.get()) 
+        #self.prestador._nome = str(self.campo_nome.get())
+        #self.prestador._usuario = self.prestador._nome
+        #self.prestador._contato =str(self.campo_email2.get())
+        #self.prestador._adm = False
+        #self.prestador._nascimento =str(self.campo_data.get())
        
+        self.prestador.def_senha(self.campo_senha2.get())
+        self.prestador.def_usuario(self.prestador._nome)
+        self.prestador.def_contato(str(self.campo_email2.get()))
+        self.prestador.def_adm(False)
+        self.prestador.def_nascimento(str(self.campo_data.get()))
+
     def salvar_dados(self):
         self.documento = str(self.campo_doc.get())
   
