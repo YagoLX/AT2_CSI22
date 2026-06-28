@@ -4,79 +4,79 @@ from Endereco import Endereco, CEP_API
 
 class Prestador: 
     def __init__(self):
-        self.id = ""
-        self.tipo_documento = ""
-        self.documento = ""
-        self.nascimento = ""
-        self.contato = ""
+        self._id = ""
+        self._tipo_documento = ""
+        self._documento = ""
+        self._nascimento = ""
+        self._contato = ""
         self.endereco = Endereco()
-        self.usuario = ""
-        self.senha = ""
-        self.adm = False
-        self.nome =""
+        self._usuario = ""
+        self._senha = ""
+        self._adm = False
+        self._nome =""
     
     def def_adm(self, adm=False):
         try:
-            self.adm = adm
+            self._adm = adm
         except:
             print("formato invalido na atribuicao de bool adm")
     
     def ler_adm(self, adm):
-        return self.adm
+        return self._adm
 
     def def_usuario(self, usuario=""):
         try:
-            self.usuario = usuario
+            self._usuario = usuario
         except:
             print("formato invalido na atribuicao de usuario")
     
     def ler_usuario(self):
-        return self.usuario
+        return self._usuario
     
     def def_senha(self, senha = ""):
         try:
-            self.senha = senha
+            self._senha = senha
         except: 
             print("formato invalido na atribuicao de senha")
 
     def ler_senha(self):
-        return self.senha
+        return self._senha
 
     def def_id(self,identificacao):
         try:
-            self.id = identificacao
+            self._id = identificacao
         except: 
             print("formato invalido na atribuicao de id")
     
     def ler_id(self):
-        return self.id
+        return self._id
     
     def def_documento(self, doc):
         try:    
-            self.documento = doc
+            self._documento = doc
         except:
             print("Erro na atribuicao de documento")
 
     def ler_documento(self,doc):
-        return self.documento
+        return self._documento
 
     def def_nascimento(self, nasc):
         try:
-            self.nascimento = nasc
+            self._nascimento = nasc
         except:
             print("Erro na atribuicao de data de nascimento")
 
     def ler_nascimento(self):
-        return self.nascimento
+        return self._nascimento
     
     def def_contato(self, ctt):
         try:
-            self.contato = ctt
+            self._contato = ctt
         except:
             print("Erro na atribuicao de documento")
 
     def ler_contato(self):
-        return self.contato
+        return self._contato
     
     def def_endereco(self, cep, complemento = "", numero = ""):
         try:
@@ -86,6 +86,15 @@ class Prestador:
             self.endereco.numero = numero
         except:
             print("entrada em def_endereco invalida")
+    
+    def def_nome(self, nome=""):
+        try:
+            self._nome = nome
+        except:
+            print("entrada em def nome invalida")
+    
+    def ler_nome(self):
+        return self._nome
 
 class validador(ABC):
     @abstractmethod
