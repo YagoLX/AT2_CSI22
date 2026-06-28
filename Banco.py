@@ -40,9 +40,17 @@ class banco():
 
     def criar_prestador(self, prestador = Prestador()):
         try:
-            adm = prestador.adm
             con = sqlite3.connect(self.caminho)
             cur = con.cursor()
+            usuario = prestador.ler_usuario()
+            senha = prestador.ler_senha()
+            nome = prestador.ler_nome()
+            tipo_documento = prestador.ler_tipo_documento()
+            documento = prestador.ler_documento()
+            nascimento = prestador.ler_nascimento()
+            contato = prestador.ler_contato()
+            adm = prestador.ler_adm()
+
             cur.execute("""
             INSERT INTO prestadores (
             usuario, senha, nome, tipo_documento, documento,
@@ -51,12 +59,12 @@ class banco():
             )
         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             """, (
-            prestador.usuario,
-            prestador.senha,
-            prestador.nome,
-            prestador.tipo_documento,
-            prestador.documento,
-            prestador.nascimento,
+            usuario,
+            senha,
+            nome,
+            tipo_documento,
+            documento,
+            nascimento,
             prestador.endereco.rua,
             prestador.endereco.numero,
             prestador.endereco.complemento,
@@ -64,8 +72,8 @@ class banco():
             prestador.endereco.cidade,
             prestador.endereco.uf,
             prestador.endereco.cep,
-            prestador.contato,
-            prestador.adm
+            contato,
+            adm
             ))
             con.commit()
             con.close()
@@ -148,7 +156,14 @@ class banco():
         try:
             con = sqlite3.connect(self.caminho)
             cur = con.cursor()
-
+            usuario = novos_dados.ler_usuario()
+            senha = novos_dados.ler_senha()
+            nome = novos_dados.ler_nome()
+            tipo_documento = novos_dados.ler_tipo_documento()
+            documento = novos_dados.ler_documento()
+            nascimento = novos_dados.ler_nascimento()
+            contato = novos_dados.ler_contato()
+            adm = novos_dados.ler_adm()
             cur.execute("""
             UPDATE prestadores SET
                 usuario = ?,
@@ -168,12 +183,12 @@ class banco():
                 adm = ?
             WHERE documento = ?
             """, (
-            novos_dados.usuario,
-            novos_dados.senha,
-            novos_dados.nome,
-            novos_dados.tipo_documento,
-            novos_dados.documento,
-            novos_dados.nascimento,
+            usuario,
+            senha,
+            nome,
+            tipo_documento,
+            documento,
+            nascimento,
             novos_dados.endereco.rua,
             novos_dados.endereco.numero,
             novos_dados.endereco.complemento,
@@ -181,8 +196,8 @@ class banco():
             novos_dados.endereco.cidade,
             novos_dados.endereco.uf,
             novos_dados.endereco.cep,
-            novos_dados.contato,
-            novos_dados.adm,
+            contato,
+            adm,
             doc
             ))
 

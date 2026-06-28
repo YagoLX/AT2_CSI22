@@ -250,7 +250,7 @@ class Aplicativo(ctk.CTk):
             dados.sort(key = lambda x:x[1])
         else:
             dados = self.lista_por_documento()
-            dados.sort(key = lambda x: x[4])
+            dados.sort(key = lambda x: x[11])
         
         for i,produto in enumerate(dados):
             card = cardPrestadores(self.rolagem, produto, self.admin)
@@ -299,7 +299,7 @@ class Aplicativo(ctk.CTk):
         endereco.numero = str(self.numero_entry.get())
         endereco.rua = str(self.rua_entry.get())
         endereco.complemento = str(self.complemento_entry.get())
-        self.prestador._endereco = endereco
+        self.prestador.endereco = endereco
 
         self.prestador._documento = str(self.campo_doc.get())
         
@@ -310,8 +310,8 @@ class Aplicativo(ctk.CTk):
             self.prestador._tipo_documento = "cnpj"
 
         self.prestador._senha = str(self.campo_senha2.get())
-        self.prestador.nome = str(self.campo_nome.get())
-        self.prestador._usuario = self.prestador.nome
+        self.prestador._nome = str(self.campo_nome.get())
+        self.prestador._usuario = self.prestador._nome
         self.prestador._contato =str(self.campo_email2.get())
         self.prestador._adm = False
         self.prestador._nascimento =str(self.campo_data.get())

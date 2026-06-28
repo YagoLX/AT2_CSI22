@@ -15,6 +15,7 @@ class Prestador:
         self._adm = False
         self._nome =""
     
+
     def def_adm(self, adm=False):
         try:
             self._adm = adm
@@ -50,6 +51,15 @@ class Prestador:
     
     def ler_id(self):
         return self._id
+    
+    def def_tipo_documento(self, tipo_documento=""):
+        try: 
+            self._tipo_documento = tipo_documento
+        except:
+            print("Erro na atribuicao de tipo de documento")
+
+    def ler_tipo_documento(self):
+        return self._tipo_documento
     
     def def_documento(self, doc):
         try:    
