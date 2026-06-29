@@ -12,7 +12,7 @@ class Endereco:
 
 class CEP_API:
     def ajustar_escrita(self, cep):
-        cep = cep.replace("-","").replace(".","").replace(" "RDBM,"")
+        cep = cep.replace("-","").replace(".","").replace(" ","")
         return cep
     
     def formato_valido(self, cep):
