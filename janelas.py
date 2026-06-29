@@ -35,16 +35,16 @@ class Aplicativo(ctk.CTk):
         self.db = banco()
         self.Deslogado()
         self.deslogado()
-
+    # Limpa tudo que tem dentro da tela especificada
     def limpar_tela(self, tela):
         for widget in list(tela.winfo_children()):
             widget.destroy()
-    
+    #sair
     def sair(self):
         self.Deslogado()
         self.deslogado()
         self.admin = False
-
+   
     def Deslogado(self):
         self.limpar_tela(self.barra_lateral)
         self.titulo = ctk.CTkLabel(self.barra_lateral,
@@ -119,7 +119,7 @@ class Aplicativo(ctk.CTk):
         self.limpar_tela(self.principal)
         self.principal.columnconfigure(4, weight = 1)
         self.principal.rowconfigure(10, weight = 1) 
-
+        
         email_label = ctk.CTkLabel(self.principal, text = "Email:")
         email_label.grid(row = 0, column = 0, pady = 20, padx = 10, sticky = "e")
         self.campo_email2 = ctk.CTkEntry(self.principal, placeholder_text="Digite seu email", width = 300)
@@ -192,7 +192,7 @@ class Aplicativo(ctk.CTk):
         self.botao_criar.configure(text = "Atualizar Cadastro", command = self.editar)
         self.apagar_conta = ctk.CTkButton(self.principal, text = "Apagar conta", fg_color= "red", command = self.apagar_propria_conta)
         self.apagar_conta.grid(row =10, column = 2)
-    
+
     def apagar_propria_conta(self):
         self.db.deletar_prestador(str(self.documento))
         self.deslogado()
@@ -256,7 +256,7 @@ class Aplicativo(ctk.CTk):
             card = cardPrestadores(self.rolagem, produto, self.admin)
             card.grid(row = i, column = 0, padx = 10, pady = 5, sticky = "ew")
         pass   
-         
+  
     def fazer_login(self):
         CEP = CEP_API()
         self.documento = CEP.ajustar_escrita(str(self.campo_email.get()))
@@ -288,7 +288,7 @@ class Aplicativo(ctk.CTk):
             if isinstance(widget,ctk.CTkEntry) and widget.get() == "" and widget != self.complemento_entry:
                 bool = True
         return bool
-    #MEXEU DIRETAMENTE NO CAMPO NO LUGAR DE USAR A FUNCAO DEF_...
+
     def adicionar(self):
         self.prestador = Prestador()
         endereco = Endereco()
@@ -363,7 +363,7 @@ class Aplicativo(ctk.CTk):
         elif not self.val_cnpj.validar(self.documento) or not self.val_cpf.validar(self.documento):
             documento_invalido = ctk.CTkLabel(self.principal, text = "Documento inválido", text_color= "red")
             documento_invalido.grid(row = 10, column = 3)
-    
+
     def esqueceu_senha(self):
         aviso_senha = ctk.CTkLabel(self.principal, text = "Entre em contato com os desenvolvedores no email: desenvolvedores@emailfake.com")
         aviso_senha.pack(pady=10)
