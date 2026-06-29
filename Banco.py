@@ -1,6 +1,5 @@
 #Banco de Dados
 import sqlite3
-from abc import ABC, abstractmethod
 from Prestador import *
 
 class banco():

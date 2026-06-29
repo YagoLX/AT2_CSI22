@@ -258,7 +258,8 @@ class Aplicativo(ctk.CTk):
         pass   
          
     def fazer_login(self):
-        self.documento = str(self.campo_email.get())
+        CEP = CEP_API()
+        self.documento = CEP.ajustar_escrita(str(self.campo_email.get()))
 
         if not self.val_cnpj.validar(self.documento) and not self.val_cpf.validar(self.documento):
             mensagem_erro = ctk.CTkLabel(self.principal, text= "Usuário ou senha incorretos", text_color= "red")
@@ -304,7 +305,7 @@ class Aplicativo(ctk.CTk):
         self.prestador.endereco = endereco
 
         #self.prestador._documento = str(self.campo_doc.get())
-        self.prestador.def_documento(str(self.campo_doc.get()))  
+        self.prestador.def_documento(CEP.ajustar_escrita(str(self.campo_doc.get())))  
         
         if(self.val_cpf.validar(self.prestador._documento)):
             self.prestador.def_tipo_documento("cpf")
